@@ -1,0 +1,55 @@
+version: '3'
+services:
+
+  krb5-admin:
+    command: /usr/sbin/kadmind -nofork
+    build: .
+    image: kerberos-test
+    hostname: krb5-admin
+    domainname: enigma.com
+    networks:
+      enigma.com:
+        ipv4_address: 172.28.1.1
+    extra_hosts:
+      - "enigma.com:127.0.0.1"
+      - "files.enigma.com:172.28.1.3"
+    ports:
+      - "8049:749"
+  krb5-kdc:
+    command: /usr/sbin/krb5kdc -n
+    image: kerberos-test
+    hostname: krb5-kdc
+    domainname: enigma.com
+    networks:
+      enigma.com:
+        ipv4_address: 172.28.1.2
+    extra_hosts:
+      - "enigma.com:127.0.0.1"
+      - "files.enigma.com:172.28.1.3"
+    ports:
+      - "8088:88"
+    volumes:
+      - .:/var/lib/ingestion/
+
+  apache2:
+    env_file: apache2.env
+    command: /usr/sbin/apache2 -DFOREGROUND
+    image: kerberos-test
+    hostname: files
+    domainname: enigma.com
+    networks:
+      enigma.com:
+        ipv4_address: 172.28.1.3
+    extra_hosts:
+      - "enigma.com:127.0.0.1"
+    ports:
+      - "8080:80"
+    volumes:
+      - ./files:/var/www/files
+
+networks:
+  enigma.com:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16

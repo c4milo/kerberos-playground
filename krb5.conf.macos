@@ -1,0 +1,20 @@
+[logging]
+    default = CONSOLE
+
+[libdefaults]
+    default_realm = ENIGMA.COM
+    kdc_timesync = 1
+    ccache_type = 4
+    forwardable = true
+    proxiable = true
+
+[realms]
+    ENIGMA.COM = {
+        kdc = tcp/krb5-kdc.enigma.com:8088
+        admin_server = tcp/krb5-admin.enigma.com:8049
+        default_domain = enigma.com
+    }
+
+[domain_realm]
+    .enigma.com = ENIGMA.COM
+    enigma.com = ENIGMA.COM
