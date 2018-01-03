@@ -18,7 +18,8 @@ RUN apt-get install -y \
         libkrb5-dev \
         net-tools \
     &&  pip3 install \
-        requests-kerberos
+        requests-kerberos \
+        krbcontext
 
 # Server configuration
 COPY kadm5.acl /etc/krb5kdc/kadm5.acl
